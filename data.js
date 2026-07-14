@@ -1,29 +1,80 @@
 // ===== プロジェクト状況データ =====
 // この中身はClaudeが作業するたびに書き換える。
 // 君は index.html をブラウザで開いて、F5（更新）するだけ。
-// state の意味: done=完了 / working=作業中 / waiting=待ち / todo=未着手 / blocked=詰まってる
+// state の意味: done=完了 / working=作業中 / waiting=君待ち / todo=未着手 / blocked=詰まってる
+//
+// ※このページは公開URLなので、パスワード・個人情報・機微な中身は載せない。
 
 window.DASH = {
   updated: "2026-07-14",
   projects: [
     {
+      id: "sengoku",
+      name: "戦国ゲーム『緋川／過去帳』",
+      emoji: "⚔️",
+      genre: "創作 / ノベル+シミュレーションゲーム",
+      color: "#a06be0",
+      progress: 85,
+      status: "active",
+      headline: "コードはほぼ完成。あとは実機調整と素材づくり待ち（オーナー待ち）",
+      party: [
+        { emoji: "🗺", role: "マップ/戦闘担当", state: "done",    note: "巨城S6マップ＋賢くなった敵AI 完成" },
+        { emoji: "🎭", role: "演出担当",        state: "done",    note: "カットイン/討ち取り/勝鬨/ピンチ演出 完成" },
+        { emoji: "📜", role: "台本担当",        state: "done",    note: "全6話＋エンディング演出 完成" },
+        { emoji: "🎮", role: "バランス調整担当", state: "waiting", note: "実機で遊んで難易度を詰める ← 最優先・君の番" },
+        { emoji: "🔊", role: "効果音/素材担当",  state: "waiting", note: "効果音8つ＋墨書PNG 生成待ち" },
+        { emoji: "🎨", role: "立ち絵/CG担当",    state: "waiting", note: "差し替えCG＋新キャラ籾の立ち絵 生成待ち（要pod）" },
+        { emoji: "🎬", role: "特典映像担当",     state: "blocked", note: "種画像が行方不明＋pod起動（課金）が要る" }
+      ],
+      forYou: [
+        "巨城S6を実際に遊んで「難しすぎ/緩すぎ」を見てほしい（最優先）",
+        "効果音・CG・特典映像はpod起動＝課金が要る。やる時は合図ちょうだい"
+      ]
+    },
+    {
       id: "survival",
       name: "サバイバル本『そのとき、どう動くか』",
       emoji: "📕",
-      genre: "出版 / 防災",
+      genre: "出版 / 防災・実用書",
       color: "#e0533d",
-      progress: 80,
+      progress: 85,
       status: "active",
-      headline: "今の主戦場。あと一息で出版までいける",
+      headline: "本文は完成・校正済み。出版直前。KDP登録がボトルネック",
       party: [
-        { emoji: "🖊", role: "原稿担当",       state: "done",    note: "本文は書き上がり済み" },
-        { emoji: "🔍", role: "監査担当",       state: "working", note: "事実・数字の裏取り 残り数章 ← 今ここ" },
-        { emoji: "👓", role: "監修担当",       state: "waiting", note: "専門家チェックの依頼準備中" },
-        { emoji: "🎨", role: "表紙担当",       state: "todo",    note: "デザイン未着手" },
-        { emoji: "📤", role: "KDP担当",        state: "todo",    note: "Amazon出版登録 未着手" },
-        { emoji: "🎬", role: "YouTube化担当",  state: "todo",    note: "本の内容を動画に 未着手" }
+        { emoji: "🖊", role: "原稿担当",        state: "done",    note: "全48本・約15万字 完成" },
+        { emoji: "🔍", role: "校正/監査担当",    state: "done",    note: "著作権・脚注・品質チェック 済み" },
+        { emoji: "📖", role: "EPUB担当",         state: "working", note: "KDP入稿ファイルはできたが章内ナビが粗い→改善中" },
+        { emoji: "📐", role: "記入シート整理担当", state: "waiting", note: "重複の整理は設計判断（雑にやると壊れる）" },
+        { emoji: "👓", role: "医療監修担当",     state: "waiting", note: "救急ページの監修を発売前に取るか判断" },
+        { emoji: "🎨", role: "表紙担当",         state: "todo",    note: "デザイン発注 未着手" },
+        { emoji: "📤", role: "KDP出版担当",      state: "waiting", note: "出品パック完成済み。KDPアカウント作成が関門" },
+        { emoji: "🌍", role: "英語版担当",       state: "todo",    note: "日本語確定後に英語ローカライズ" }
       ],
-      forYou: ["監査の方向性、この内容で進めてOKか一度ざっと見てほしい"]
+      forYou: [
+        "KDPアカウント作成＋税務＋口座（1回・約1時間）だけが関門。ここ越えたら出版一直線",
+        "救急ページの医療監修を取るかどうか決めてほしい"
+      ]
+    },
+    {
+      id: "bantou",
+      name: "ビジネス分析（物販）／番頭システム",
+      emoji: "📈",
+      genre: "ビジネス / 物販の利益分析・自動化",
+      color: "#e0a53d",
+      progress: 60,
+      status: "active",
+      headline: "目標=年収500万（副業で月11〜12万手取り）。今 月約6.6万→あと月4〜5万を埋める",
+      party: [
+        { emoji: "🔎", role: "目利き班(仕入れ)",  state: "working", note: "ヤフオク巡回レシピ完成→毎朝の自動実行を実装待ち" },
+        { emoji: "🏪", role: "店先班(出品)",       state: "working", note: "出品テンプレ完成→理想画像＆eBay登録承認待ち" },
+        { emoji: "📒", role: "帳場班(帳簿/税務)",  state: "done",    note: "販売分析・古物台帳・会計取込 土台完成" },
+        { emoji: "📊", role: "戦略担当",           state: "done",    note: "「甲冑 月2点で目標達成」の勝ち筋 確定" }
+      ],
+      forYou: [
+        "⏰ 今日(7/14)の予定: eBayのオファー送信＋臨時休業の解除。「オファー送るよ」と言えば5分でやる",
+        "理想画像3〜5枚 / 購入履歴スクショで古物台帳を補完（いつでも）",
+        "eBay開発者登録の承認 → 出品下書きの自動化がオンになる"
+      ]
     },
     {
       id: "yt",
@@ -35,56 +86,13 @@ window.DASH = {
       status: "done",
       headline: "完成・運用中。URL貼るだけで日本語要約→Gmail下書き",
       party: [
-        { emoji: "⚙", role: "取得担当",   state: "done",    note: "字幕取得の仕組み完成" },
-        { emoji: "📝", role: "要約担当",   state: "done",    note: "テーマ別に束ねて要約" },
-        { emoji: "📩", role: "配達担当",   state: "waiting", note: "429で保留の4本を時間置いて再取得" }
+        { emoji: "⚙", role: "取得担当", state: "done",    note: "字幕取得の仕組み完成" },
+        { emoji: "📝", role: "要約担当", state: "done",    note: "テーマ別に束ねて要約" },
+        { emoji: "📩", role: "配達担当", state: "waiting", note: "429で保留中の4本を、時間置いて再取得予定" }
       ],
-      forYou: ["保留の4本、あとで『残り取って』って言ってくれたら取り直す"]
-    },
-    {
-      id: "resell",
-      name: "物販コンサル（eBay/メルカリ 他）",
-      emoji: "💰",
-      genre: "ビジネス / 転売",
-      color: "#3fae6b",
-      progress: 40,
-      status: "active",
-      headline: "目標月収に向けて。仕入れ〜出品の相談役",
-      party: [
-        { emoji: "🔎", role: "リサーチ担当", state: "todo", note: "売れ筋・仕入れ先の分析（依頼あれば動く）" },
-        { emoji: "📊", role: "分析担当",     state: "idle", note: "数字が来たら利益計算・戦略提案" }
-      ],
-      forYou: []
-    },
-
-    // ↓↓↓ ここから下は君が例に出したやつ。中身が分からんから仮で置いてある ↓↓↓
-    {
-      id: "sengoku",
-      name: "戦国ゲーム ❓",
-      emoji: "⚔️",
-      genre: "（教えて）",
-      color: "#a06be0",
-      progress: 0,
-      status: "idle",
-      headline: "← これ何のプロジェクト？中身を教えてくれたら埋めるで",
-      party: [
-        { emoji: "❓", role: "未設定", state: "todo", note: "どんな役割が要るか一緒に決めよう" }
-      ],
-      forYou: ["これが何のプロジェクトか教えて（ゲーム制作？ゲーム攻略？）"]
-    },
-    {
-      id: "bizanalysis",
-      name: "ビジネス分析 ❓",
-      emoji: "📈",
-      genre: "（教えて）",
-      color: "#e0a53d",
-      progress: 0,
-      status: "idle",
-      headline: "← これも中身を教えてくれたら埋める",
-      party: [
-        { emoji: "❓", role: "未設定", state: "todo", note: "何を分析したいか教えて" }
-      ],
-      forYou: ["何のビジネスを分析したいのか教えて"]
+      forYou: [
+        "保留の4本、あとで『残り取って』って言ってくれたら取り直す"
+      ]
     }
   ]
 };
