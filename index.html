@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>🏰 プロジェクト・クエストボード</title>
+<style>
+  :root{
+    --bg:#12141f; --panel:#1b1e2e; --panel2:#242840;
+    --gold:#e8c46a; --text:#e9ecf5; --muted:#8b90ad; --line:#333a5c;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:radial-gradient(circle at 50% -10%,#232a4d 0%,var(--bg) 55%);
+    color:var(--text); font-family:'Segoe UI','Yu Gothic UI',sans-serif; padding:22px 16px 60px;
+    min-height:100vh;
+  }
+  .wrap{max-width:960px;margin:0 auto}
+  h1{font-size:24px;margin:0 0 2px;letter-spacing:1px}
+  h1 .sub{font-size:13px;color:var(--muted);font-weight:normal;letter-spacing:0}
+  .updated{font-size:12px;color:var(--muted);margin-bottom:18px}
+
+  /* 君の番ボックス */
+  .turn{
+    background:linear-gradient(90deg,#3a2b12,#2a2033); border:2px solid var(--gold);
+    border-radius:14px; padding:14px 18px; margin-bottom:22px; box-shadow:0 0 22px #e8c46a22;
+  }
+  .turn h2{margin:0 0 8px;font-size:16px;color:var(--gold)}
+  .turn ul{margin:0;padding-left:4px;list-style:none}
+  .turn li{padding:6px 0;border-top:1px dashed #5a4a2a;display:flex;gap:8px;align-items:flex-start}
+  .turn li:first-child{border-top:none}
+  .turn .tag{font-size:11px;background:#00000040;border:1px solid var(--line);border-radius:6px;padding:1px 7px;color:var(--muted);white-space:nowrap}
+
+  /* タブ */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
+  .tab{
+    background:var(--panel); border:1px solid var(--line); color:var(--text);
+    padding:8px 14px; border-radius:10px; cursor:pointer; font-size:14px; transition:.15s;
+  }
+  .tab:hover{border-color:var(--gold)}
+  .tab.on{background:var(--gold);color:#1a1400;border-color:var(--gold);font-weight:bold}
+
+  /* オーバービュー グリッド */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
+  .card{
+    background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px;
+    cursor:pointer; transition:.15s; position:relative; overflow:hidden;
+  }
+  .card:hover{transform:translateY(-3px);border-color:var(--gold)}
+  .card .side{position:absolute;left:0;top:0;bottom:0;width:5px}
+  .card .name{font-size:16px;font-weight:bold;margin:0 0 3px}
+  .card .genre{font-size:11px;color:var(--muted);margin-bottom:10px}
+  .card .head{font-size:12px;color:#c9cef0;margin-bottom:12px;min-height:32px}
+
+  .bar{height:12px;background:#0c0e18;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  .bar > i{display:block;height:100%;border-radius:8px}
+  .pct{font-size:12px;color:var(--muted);margin-top:5px;display:flex;justify-content:space-between}
+
+  .badge{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:bold}
+  .b-active{background:#1e4d3a;color:#5fe3a1}
+  .b-done{background:#2b3a5a;color:#8fb4ff}
+  .b-idle{background:#4a3a1e;color:#e8c46a}
+
+  /* プロジェクト詳細 */
+  .detail{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:22px}
+  .detail .dhead{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .detail .dhead .em{font-size:34px}
+  .detail .dname{font-size:20px;font-weight:bold}
+  .party{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+  .mem{display:flex;align-items:center;gap:12px;background:var(--panel2);border-radius:10px;padding:10px 14px}
+  .mem .av{font-size:24px;width:34px;text-align:center}
+  .mem .role{font-weight:bold;font-size:14px;min-width:110px}
+  .mem .note{font-size:12px;color:#c9cef0;flex:1}
+  .st{font-size:11px;padding:3px 9px;border-radius:7px;font-weight:bold;white-space:nowrap}
+  .st-done{background:#1e4d3a;color:#5fe3a1}
+  .st-working{background:#3a2f5a;color:#c3a6ff}
+  .st-waiting{background:#4a3a1e;color:#e8c46a}
+  .st-todo{background:#2a2e42;color:#8b90ad}
+  .st-blocked{background:#5a1e28;color:#ff8fa0}
+  .hide{display:none}
+  .foot{margin-top:30px;font-size:11px;color:var(--muted);text-align:center;line-height:1.7}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🏰 プロジェクト・クエストボード <span class="sub">／ 今なにが動いてる？</span></h1>
+  <div class="updated" id="updated"></div>
+
+  <div class="turn" id="turnBox"></div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="view"></div>
+
+  <div class="foot">
+    このボードはClaudeが作業するたびに更新するで。見たいときは F5（更新）押すだけ。<br>
+    中身がおかしい所は「◯◯直して」って言ってくれたら直す。
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script>
+const ST = {
+  done:   ["✅ 完了","st-done"],
+  working:["⚙ 作業中","st-working"],
+  waiting:["⏳ 待ち","st-waiting"],
+  todo:   ["・未着手","st-todo"],
+  blocked:["⛔ 詰まり","st-blocked"],
+  idle:   ["・未着手","st-todo"]
+};
+const STATUS = {
+  active:["進行中","b-active"], done:["完成","b-done"], idle:["休眠","b-idle"]
+};
+const D = window.DASH;
+
+// 更新日
+document.getElementById("updated").textContent = "最終更新: " + D.updated;
+
+// 君の番ボックス
+const turn = D.projects.flatMap(p => (p.forYou||[]).map(t => ({p, t})));
+const tb = document.getElementById("turnBox");
+if(turn.length){
+  tb.innerHTML = "<h2>⭐ 君の番だよ（横断でまとめたやつ）</h2><ul>" +
+    turn.map(x => `<li><span class="tag">${x.p.emoji} ${escapeShort(x.p.name)}</span><span>${esc(x.t)}</span></li>`).join("") +
+    "</ul>";
+} else { tb.style.display="none"; }
+
+// タブ
+const tabs = document.getElementById("tabs");
+let btns = [`<div class="tab on" data-i="all">🗺 ぜんぶ</div>`];
+D.projects.forEach((p,i)=> btns.push(`<div class="tab" data-i="${i}">${p.emoji} ${escapeShort(p.name)}</div>`));
+tabs.innerHTML = btns.join("");
+tabs.querySelectorAll(".tab").forEach(b => b.onclick = () => select(b.dataset.i, b));
+
+function select(i, btn){
+  tabs.querySelectorAll(".tab").forEach(b=>b.classList.remove("on"));
+  btn.classList.add("on");
+  render(i);
+}
+
+function render(i){
+  const v = document.getElementById("view");
+  if(i === "all"){
+    v.innerHTML = `<div class="grid">` + D.projects.map((p,idx)=>{
+      const [slabel,scls] = STATUS[p.status] || STATUS.idle;
+      return `<div class="card" onclick="jump(${idx})">
+        <div class="side" style="background:${p.color}"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div class="name">${p.emoji} ${esc(p.name)}</div>
+          <span class="badge ${scls}">${slabel}</span>
+        </div>
+        <div class="genre">${esc(p.genre)}</div>
+        <div class="head">${esc(p.headline)}</div>
+        <div class="bar"><i style="width:${p.progress}%;background:${p.color}"></i></div>
+        <div class="pct"><span>進捗</span><span>${p.progress}%</span></div>
+      </div>`;
+    }).join("") + `</div>`;
+  } else {
+    const p = D.projects[i];
+    v.innerHTML = `<div class="detail">
+      <div class="dhead"><div class="em">${p.emoji}</div>
+        <div><div class="dname">${esc(p.name)}</div><div class="genre">${esc(p.genre)}</div></div></div>
+      <div class="head" style="color:#c9cef0;margin:6px 0 14px">${esc(p.headline)}</div>
+      <div class="bar"><i style="width:${p.progress}%;background:${p.color}"></i></div>
+      <div class="pct"><span>全体の進捗</span><span>${p.progress}%</span></div>
+      <div class="party">` +
+      p.party.map(m=>{
+        const [label,cls] = ST[m.state] || ST.todo;
+        return `<div class="mem"><div class="av">${m.emoji}</div>
+          <div class="role">${esc(m.role)}</div>
+          <div class="note">${esc(m.note)}</div>
+          <span class="st ${cls}">${label}</span></div>`;
+      }).join("") + `</div></div>`;
+  }
+}
+function jump(idx){
+  const btn = tabs.querySelector(`.tab[data-i="${idx}"]`);
+  select(String(idx), btn); window.scrollTo({top:0,behavior:"smooth"});
+}
+function esc(s){return String(s).replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function escapeShort(s){return esc(s.length>18? s.slice(0,17)+"…" : s);}
+
+render("all");
+</script>
+</body>
+</html>
